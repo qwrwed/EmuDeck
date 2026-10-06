@@ -122,11 +122,8 @@ Ryujinx_setEmulationFolder(){
     sed -i "s|/run/media/mmcblk0p1/Emulation/roms|${romsPath}|g" "$Ryujinx_configFile"
 
     #Setup Bios symlinks
-    unlink "${biosPath}/ryujinx/keys"
     mkdir -p "$HOME/.config/Ryujinx/system/"
     mkdir -p "${biosPath}/ryujinx/"
-    unlink "$HOME/.config/Ryujinx/system"
-    ln -sn "$HOME/.config/Ryujinx/system" "${biosPath}/ryujinx/keys"
     sed -i "s|/run/media/mmcblk0p1/Emulation/roms|${romsPath}|g" "$Ryujinx_configFile"
     
     # Portable
@@ -163,14 +160,7 @@ Ryujinx_setLanguage(){
 Ryujinx_setupSaves(){
     echo "Begin Ryujinx save link"
 
-    if [ -d "${emulationPath}/saves/ryujinx/saves" ]; then
-        rm -rf "${emulationPath}/saves/ryujinx/saves"
-        rm -rf "${emulationPath}/saves/ryujinx/saveMeta"
-    fi
 
-    if [ -d "${emulationPath}/saves/Ryujinx/saves" ]; then
-        rm -rf "${emulationPath}/saves/Ryujinx/"
-    fi
 
     linkToSaveFolder ryujinx saves "$HOME/.config/Ryujinx/bis/user/save"
     linkToSaveFolder ryujinx saveMeta "$HOME/.config/Ryujinx/bis/user/saveMeta"
@@ -185,15 +175,11 @@ Ryujinx_setupStorage(){
 
     local origPath="$HOME/.config/"
     mkdir -p "${storagePath}/ryujinx/patchesAndDlc"
-    rsync -av "${origPath}/Ryujinx/games/" "${storagePath}/ryujinx/games/" && rm -rf "${origPath}Ryujinx/games"
-    unlink "${origPath}/Ryujinx/games"
-    ln -ns "${storagePath}/ryujinx/games/" "${origPath}/Ryujinx/games"
 }
 
 #WipeSettings
 Ryujinx_wipe(){
     echo "Begin Ryujinx delete config directories"
-    rm -rf "$HOME/.config/Ryujinx"
 }
 
 #Uninstall
@@ -222,8 +208,6 @@ Ryujinx_migrate(){
     local origPath="$HOME/.config"
 
     Ryujinx_setupStorage
-    rsync -av "${origPath}/Ryujinx/games" "${storagePath}/ryujinx/games" && rm -rf "${origPath}/Ryujinx/games"
-    ln -s "${storagePath}/ryujinx/games" "${origPath}/ryujinx/games"  #may want to unlink this before hand?
 }
 
 Ryujinx_convertFromYuzu(){
